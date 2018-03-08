@@ -3,7 +3,8 @@ const _RIGHT = 1;
 
 let gridWidth = 160;
 let gridHeight = 160;
-let ant = {x:60, y:60, direction:0};
+let antA = {x:60, y:60, direction:0};
+let antB = {x:100, y:100, direction:2};
 
 let grid = new Grid(gridWidth, gridHeight, 1);
 
@@ -15,27 +16,38 @@ function setup() {
 
 function draw() {
   //drawGrid(11000);
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
-  drawAnt();
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
+  drawAnt(antA);
+  drawAnt(antB);
 }
 
-function drawAnt(){
+function drawAnt(ant){
   fill(grid.data[ant.x][ant.y].currentState * 255);
-  stroke(0);
+  //stroke(0);
+  noStroke();
   rect(ant.x * width / gridWidth, ant.y * height / gridHeight, (width / gridWidth)-1, (height / gridHeight)-1);
 
-  moveAnt();
+  moveAnt(ant);
 }
 
-function moveAnt(){
+function moveAnt(ant){
   grid.data[ant.x][ant.y].col >= 2 ? grid.data[ant.x][ant.y].col-=2 : grid.data[ant.x][ant.y].col = 0;
   grid.data[ant.x][ant.y].currentState == 1 ? ant.direction++ : ant.direction--;
   grid.data[ant.x][ant.y].setState( 1 - grid.data[ant.x][ant.y].currentState);
@@ -60,7 +72,7 @@ function moveAnt(){
 
 function drawGrid(steps){
   for(let q = 0; q < steps; q++){
-    moveAnt();
+    moveAnt(antA);
   }
 
   strokeWeight(1);
