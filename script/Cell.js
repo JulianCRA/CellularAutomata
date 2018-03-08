@@ -3,7 +3,7 @@ class Cell {
         this.previousState = null;
         this.initalState = state;
         this.currentState = state;
-        this.col = {r:255*Math.random(), g:255*Math.random(), b:255*Math.random()};
+        this.col = 255;
     }
     
     setState(newState){
