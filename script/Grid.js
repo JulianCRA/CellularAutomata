@@ -15,7 +15,7 @@ class Grid {
   
     preShuffle(amount, state){
         for(let i = 0; i < amount; i++){
-            this.data[Math.floor(Math.random()*(this.width - 1))][Math.floor(Math.random()*(this.height - 1))].setState(state);
+            this.data[Math.floor(Math.random()*(this.width - 1))][Math.floor(Math.random()*(this.height - 1))].setInitialState(state);
         }
     }
     

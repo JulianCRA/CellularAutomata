@@ -3,8 +3,8 @@ const _RIGHT = 1;
 
 let gridWidth = 160;
 let gridHeight = 160;
-let antA = {x:60, y:60, direction:0};
-let antB = {x:100, y:100, direction:2};
+let antA = {x:30, y:30, direction:0};
+let antB = {x:130, y:130, direction:2};
 
 let grid = new Grid(gridWidth, gridHeight, 1);
 
@@ -40,7 +40,7 @@ function draw() {
 
 function drawAnt(ant){
   fill(grid.data[ant.x][ant.y].currentState * 255);
-  //stroke(0);
+  //stroke(grid.data[ant.x][ant.y].currentState * 255);
   noStroke();
   rect(ant.x * width / gridWidth, ant.y * height / gridHeight, (width / gridWidth)-1, (height / gridHeight)-1);
 

@@ -39,7 +39,7 @@ html, body {
   }
   
   .wrapper > * {
-    background-color: #fff;
+    background-color: rgb(214, 190, 190);
     color: #000;
     border-radius: 5px;
     padding: 20px;
