@@ -1,5 +1,5 @@
-let gridWidth = 160;
-let gridHeight = 160;
+let gridWidth = 200;
+let gridHeight = 200;
 
 let grid = new Grid(gridWidth, gridHeight, 1);
 let evolution = new Array(gridWidth);
@@ -7,7 +7,7 @@ let evolution = new Array(gridWidth);
 function setup() {
     var cnv = createCanvas(800, 800);
     cnv.parent('gridBoard2');
-    grid.preShuffle(12000, 0);
+    grid.preShuffle(5000, 0);
     
     /*grid.data[20][20].setInitialState(0);
     grid.data[19][21].setInitialState(0);
@@ -20,7 +20,7 @@ function setup() {
     grid.data[21][23].setInitialState(0);*/
 
       
-    frameRate(10);
+    frameRate(15);
     //noLoop();
 }
   
