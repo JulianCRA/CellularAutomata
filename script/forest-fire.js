@@ -8,7 +8,8 @@ var forestfire = function( p ) {
     let gridHeight = 120;
 
     let f = 0.000005;       // spontaneous combustion probablilty
-    let pt = 0.005;          // tree birth probability
+    let d = 0.2;            // fire resitance
+    let pt = 0.005;         // tree birth probability
     let grid = new Grid(gridWidth, gridHeight, 1);
     let evolution = new Array(gridWidth);
 
@@ -50,7 +51,7 @@ var forestfire = function( p ) {
     p.evaluateCell = function(xpos, ypos){
         if(grid.data[xpos][ypos].previousState == _BURNING) grid.data[xpos][ypos].setState(_EMPTY);
         if(grid.data[xpos][ypos].previousState == _EMPTY && Math.random() < pt) grid.data[xpos][ypos].setState(_TREE);
-        if(grid.data[xpos][ypos].previousState == _TREE){
+        if(grid.data[xpos][ypos].previousState == _TREE && Math.random() > d){
             if( grid.data[xpos][ypos-1 > 0? ypos-1:gridHeight-1].previousState == _BURNING ||
                 grid.data[xpos-1 > 0? xpos-1:gridWidth-1][ypos].previousState == _BURNING ||
                 grid.data[xpos+1 > gridWidth-1? 0:xpos+1][ypos].previousState == _BURNING ||
