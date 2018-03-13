@@ -14,18 +14,26 @@
     <div class="wrapper">
       <header class="header">Cellular Automata</header>
       <aside class="sidebar">
-        <ul>
-          <li><button id="lant">Langton's Ant</button></li>
-          <li><button id="life">Conway's Game of Life</button></li>
-          <li><button id="fire">Forest Fire</button></li>
-        </ul>
+          <input type="range" min="2" max="125" value="50" class="slider" id="gridwidth">
+          <b id="slidervalue">50</b>
+  
+          <input type="checkbox" id="ant1" onclick="if (this.checked){ document.getElementById('ant1x').removeAttribute('disabled');
+          document.getElementById('ant1y').removeAttribute('disabled');}" />
+          <input type="number" id="ant1x" min="0" max="124" disabled>
+          <input type="number" id="ant1y" min="0" max="124" disabled>
       </aside>
       <article class="content">
-        <h1 id="automaton-title">Automata</h1>
-        <div id="gridBoard"></div>
-        <div id="gridBoard2"></div>
+        <header id="automaton-title">Automata</header>
+        <div id="gridboard"></div>
       </article>
-      <footer class="footer">Config tools?</footer>
+      <footer class="footer">
+          <ul>
+              <li><button id="lant">Langton's Ant</button></li>
+              <li><button id="life">Conway's Game of Life</button></li>
+              <li><button id="fire">Forest Fire</button></li>
+            </ul>
+        
+      </footer>
     </div>
 
     <script src="script/dashboard.js"></script>

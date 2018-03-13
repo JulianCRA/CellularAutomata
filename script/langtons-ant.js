@@ -1,44 +1,36 @@
-var langtonsant = function( p ) {
+var langtonsant = function( p, ww, hh ) {
 
   const _LEFT = -1;
   const _RIGHT = 1;
 
-  let gridWidth = 120;
-  let gridHeight = 120;
-  let antA = {x:30, y:30, direction:0};
-  let antB = {x:90, y:90, direction:2};
-
-  let grid = new Grid(gridWidth, gridHeight, 1);
+  let gridWidth;
+  let gridHeight;
+  let ants;
+  let grid;
 
   p.setup = function(){
-    let cnv = p.createCanvas(600, 600);
+    
+    p.initSketch(120, [{x:30, y:30, direction:1}]);
+    p.createCanvas(600, 600);
     //noLoop();
   }
 
   p.draw = function(){
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
-    p.drawAnt(antA);
-    p.drawAnt(antB);
+    for(let i = 0; i<ants.length; i++)
+      p.drawAnt(ants[i]);
+  }
+
+  p.initSketch = function(size, antsArray){
+    p.clear();
+    gridWidth = size;
+    gridHeight = size;
+    ants = antsArray;
+        
+    grid = new Grid(gridWidth, gridHeight, 1);
   }
 
   p.drawAnt = function(ant){
     p.fill(grid.data[ant.x][ant.y].currentState * 255);
-    //stroke(grid.data[ant.x][ant.y].currentState * 255);
     p.noStroke();
     p.rect(ant.x * p.width / gridWidth, ant.y * p.height / gridHeight, (p.width / gridWidth)-1, (p.height / gridHeight)-1);
 
@@ -73,7 +65,7 @@ var langtonsant = function( p ) {
       p.moveAnt(antA);
     }
 
-    strokeWeight(1);
+    p.strokeWeight(1);
     for (let i = 0; i < gridWidth; i++){
       for (let j = 0; j < gridHeight; j++){
         if(grid.data[i][j].currentState == 0/* || grid.data[i][j].previousState == 0*/){
@@ -85,4 +77,5 @@ var langtonsant = function( p ) {
     }
   }
 
+ 
 }

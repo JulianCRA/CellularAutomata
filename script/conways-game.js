@@ -1,34 +1,23 @@
 var conwayslife = function( p ) {
 
-    let gridWidth = 30;
-    let gridHeight = 30;
+    let gridWidth;
+    let gridHeight;
 
-    let grid = new Grid(gridWidth, gridHeight, 1);
-    let evolution = new Array(gridWidth);
+    let grid;
+    let evolution;
 
     p.setup = function() {
-        let cnv = p.createCanvas(600, 600);
+        p.initSketch(50, 250);
+
+        // GLIDER
+        //p.initSketch(50, [{x:2, y:2},{x:3, y:2},{x:4, y:2},{x:4, y:1},{x:3, y:0}]);
+
         
-        // Random initial grid state
-        grid.preShuffle(90, 0);
-        p.frameRate(10);
-        
-        /*
-        // Glider
-        grid.data[3][3].setInitialState(0);
-        grid.data[4][3].setInitialState(0);
-        grid.data[5][3].setInitialState(0);
-        grid.data[5][2].setInitialState(0);
-        grid.data[4][1].setInitialState(0);
-        */
-        
-        p.frameRate(15);
-        //noLoop();
+        p.createCanvas(600, 600);
     }
     
 
     p.draw  = function(){
-        //strokeWeight(1);
         for (let i = 0; i < gridWidth; i++){
             evolution[i] = new Array(gridHeight);
             for (let j = 0; j < gridHeight; j++){
@@ -45,6 +34,22 @@ var conwayslife = function( p ) {
             for (let j = 0; j < gridHeight; j++){
                 grid.data[i][j].setState(evolution[i][j]);
             }
+        }
+    }
+
+    p.initSketch = function(size, seed){
+        p.clear();
+        p.frameRate(15);
+        gridWidth = size;
+        gridHeight = size;
+        evolution = new Array(gridWidth);
+        grid = new Grid(gridWidth, gridHeight, 1);
+        if(seed.constructor === Array){
+            console.log(seed.length);
+            for(let i = 0; i < seed.length; i++)
+                grid.data[seed[i].x][seed[i].y].setInitialState(0);
+        }else{
+            grid.preShuffle(seed, 0);
         }
     }
 
