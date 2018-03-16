@@ -1,12 +1,14 @@
 const _LANGTONS_ANT = 0;
 const _CONWAYS_GAME = 1;
 const _FOREST_FIRE = 2;
+const _BELUSOV_ZH = 3;
 
 let p5sketch = null;
 
 document.getElementById("lant").onclick = function() {startAutomaton(_LANGTONS_ANT)};
 document.getElementById("life").onclick = function() {startAutomaton(_CONWAYS_GAME)};
 document.getElementById("fire").onclick = function() {startAutomaton(_FOREST_FIRE)};
+document.getElementById("blzh").onclick = function() {startAutomaton(_BELUSOV_ZH)};
 function startAutomaton(automaton){
     if(p5sketch!=null)p5sketch.remove();
     
@@ -28,10 +30,41 @@ function startAutomaton(automaton){
             document.getElementById("automaton-title").innerHTML = "Forest Fire";
             p5sketch = new p5(forestfire, "gridboard");
             break;
+        case _BELUSOV_ZH:
+            //start BZ
+            document.getElementById("automaton-title").innerHTML = "Belusov-Zhabotinsky's Reaction";
+            p5sketch = new p5(belusovzhabotinsky, "gridboard");
+            break;
     }
 }
 
 
-document.getElementById("gridwidth").oninput = function() {
-    document.getElementById("slidervalue").innerHTML = this.value;
+document.getElementById("gridwidth").oninput = function() {upd();}
+document.getElementById("seed").oninput = function() {upd();}
+document.getElementById("nstates").oninput = function() {upd();}
+document.getElementById("k1").oninput = function() {upd();}
+document.getElementById("k2").oninput = function() {upd();}
+document.getElementById("g").oninput = function() {upd();}
+
+function upd(){
+    if(p5sketch!=null)p5sketch.remove();
+    p5sketch = new p5(belusovzhabotinsky, "gridboard");
+    document.getElementById("sliderwidth").innerHTML = document.getElementById("gridwidth").value;
+    document.getElementById("sliderseed").innerHTML = document.getElementById("seed").value;
+    document.getElementById("slidernstates").innerHTML = document.getElementById("nstates").value;
+    document.getElementById("sliderk1").innerHTML = document.getElementById("k1").value;
+    document.getElementById("sliderk2").innerHTML = document.getElementById("k2").value;
+    document.getElementById("sliderg").innerHTML = document.getElementById("g").value;
+    p5sketch.initSketch(document.getElementById("gridwidth").value,
+                        document.getElementById("seed").value,
+                        document.getElementById("nstates").value,
+                        document.getElementById("k1").value,
+                        document.getElementById("k2").value,
+                        document.getElementById("g").value);
+    p5sketch.isf(document.getElementById("gridwidth").value,
+    document.getElementById("seed").value,
+    document.getElementById("nstates").value,
+    document.getElementById("k1").value,
+    document.getElementById("k2").value,
+    document.getElementById("g").value);
 }

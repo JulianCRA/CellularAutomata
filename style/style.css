@@ -58,6 +58,25 @@ html, body {
     clear: both;
   }
   
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+li:hover {
+    background-color: #111111;
+}
   
   /* We need to set the widths used on floated items back to auto, and remove the bottom margin as when we have grid we have gaps. */
   @supports (display: grid) {

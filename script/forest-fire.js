@@ -16,8 +16,9 @@ var forestfire = function( p ) {
     let evolution;
 
     p.setup = function() {
-        p.initSketch(120, 0.000005, 0.3, 0.005, 0.000001);
         p.createCanvas(600, 600);
+        p.initSketch(200, 0.000005, 0.3, 0.005, 0.000001);
+        
     }
 
     p.draw = function(){
@@ -42,8 +43,9 @@ var forestfire = function( p ) {
                         break;
                 }
                 
-                p.noStroke()
-                p.rect(i * p.width / gridWidth, j * p.height / gridHeight, (p.width / gridWidth), (p.height / gridHeight));
+                p.noStroke();
+                if(evolution[i][j] != grid.data[i][j].previousState)
+                    p.rect(i * p.width / gridWidth, j * p.height / gridHeight, (p.width / gridWidth), (p.height / gridHeight));
                 
             }
         }
@@ -63,6 +65,9 @@ var forestfire = function( p ) {
         pt = germination;
         rr = recovery;
         grid = new Grid(gridWidth, gridHeight, _TREE);
+        p.noStroke();
+        p.fill("forestgreen");
+        p.rect(0,0,p.width,p.height);
         evolution = new Array(gridWidth);
     }
 

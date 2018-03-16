@@ -10,17 +10,30 @@
     <script src="script/langtons-ant.js"></script>
     <script src="script/conways-game.js"></script>
     <script src="script/forest-fire.js"></script>
+    <script src="script/belusov-zhabotinsky.js"></script>
 
     <div class="wrapper">
       <header class="header">Cellular Automata</header>
       <aside class="sidebar">
-          <input type="range" min="2" max="125" value="50" class="slider" id="gridwidth">
-          <b id="slidervalue">50</b>
+          <input type="range" min="6" max="200" value="60" class="slider" id="gridwidth" step="6">
+          <b id="sliderwidth">60</b>
+
+          <input type="range" min="1" max="200" value="5" class="slider" id="seed">
+          <b id="sliderseed">5</b>
+
+          <input type="range" min="2" max="255" value="50" class="slider" id="nstates">
+          <b id="slidernstates">50</b>
+
+          <input type="range" min="1" max="8" value="1" class="slider" id="k1">
+          <b id="sliderk1">1</b>
+
+          <input type="range" min="1" max="8" value="1" class="slider" id="k2">
+          <b id="sliderk2">1</b>
+
+          <input type="range" min="1" max="100" value="10" class="slider" id="g">
+          <b id="sliderg">10</b>
   
-          <input type="checkbox" id="ant1" onclick="if (this.checked){ document.getElementById('ant1x').removeAttribute('disabled');
-          document.getElementById('ant1y').removeAttribute('disabled');}" />
-          <input type="number" id="ant1x" min="0" max="124" disabled>
-          <input type="number" id="ant1y" min="0" max="124" disabled>
+          
       </aside>
       <article class="content">
         <header id="automaton-title">Automata</header>
@@ -31,6 +44,7 @@
               <li><button id="lant">Langton's Ant</button></li>
               <li><button id="life">Conway's Game of Life</button></li>
               <li><button id="fire">Forest Fire</button></li>
+              <li><button id="blzh">Belusov-Zhabotinsky's Reaction</button></li>
             </ul>
         
       </footer>
