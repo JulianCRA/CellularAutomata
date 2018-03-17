@@ -12,6 +12,7 @@ var belusovzhabotinsky = function( p ) {
     let g;
 
     let canvas;
+    p.cycles = 0;
     
     p.setup = function(){
         
@@ -56,6 +57,7 @@ var belusovzhabotinsky = function( p ) {
             }
         }
         p.grid.iterate();
+        p.cycles++;
     }
 
     p.evaluateCell = function(xpos, ypos){
@@ -78,7 +80,7 @@ var belusovzhabotinsky = function( p ) {
         p.grid.nextIteration[xpos][ypos] = newState;
     }
 
-    p.checkNeighborhood = function(xpos, ypos, radius = 3){
+    p.checkNeighborhood = function(xpos, ypos, radius = 7){
         let bound = (radius - 1)/2;
         let healthy = 0;
         let infected = 0;

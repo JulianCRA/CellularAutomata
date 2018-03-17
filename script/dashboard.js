@@ -2,6 +2,7 @@ const _LANGTONS_ANT = 0;
 const _CONWAYS_GAME = 1;
 const _FOREST_FIRE = 2;
 const _BELUSOV_ZH = 3;
+const _VIRAL_REP = 4;
 
 let p5sketch = null;
 
@@ -9,6 +10,7 @@ document.getElementById("lant").onclick = function() {startAutomaton(_LANGTONS_A
 document.getElementById("life").onclick = function() {startAutomaton(_CONWAYS_GAME)};
 document.getElementById("fire").onclick = function() {startAutomaton(_FOREST_FIRE)};
 document.getElementById("blzh").onclick = function() {startAutomaton(_BELUSOV_ZH)};
+document.getElementById("vrep").onclick = function() {startAutomaton(_VIRAL_REP)};
 function startAutomaton(automaton){
     if(p5sketch!=null)p5sketch.remove();
     
@@ -34,6 +36,11 @@ function startAutomaton(automaton){
             //start BZ
             document.getElementById("automaton-title").innerHTML = "Belusov-Zhabotinsky's Reaction";
             p5sketch = new p5(belusovzhabotinsky, "gridboard");
+            break;
+        case _VIRAL_REP:
+            //start BZ
+            document.getElementById("automaton-title").innerHTML = "Viral Replication";
+            p5sketch = new p5(viralreplication, "gridboard");
             break;
     }
 }
