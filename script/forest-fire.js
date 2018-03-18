@@ -7,92 +7,114 @@ var forestfire = function( p ) {
 
     let gridWidth;
     let gridHeight;
+    let cellWidth;
+    let cellHeight;
 
-    let f;       // spontaneous combustion probablilty
-    let d;            // fire resitance
-    let pt;         // tree germination probability
-    let rr;       // soil recovery rate
-    let grid;
-    let evolution;
+    let combustion;         // spontaneous combustion probablilty
+    let resistance;         // fire resitance
+    let germination;        // tree germination probability
+    let recovery;           // soil recovery rate
+    let toroidal;           // toroidal plane?
 
+    p.grid;
+    let deadtime;
+    let canvas;
+    
     p.setup = function() {
-        p.createCanvas(600, 600);
-        p.initSketch(200, 0.000005, 0.3, 0.005, 0.000001);
+        p.initSketch(300, 300, 0.000001, 0.40, 0.005, 0.00000001, false);
+    }
+    p.initSketch = function(w, h, com, res, ger, rec, tor = true){
+        canvas = p.createCanvas(600, 600);
+        canvas.doubleClicked = function(){p.doubleClicked();};
+
+        gridWidth = w / 1;
+        gridHeight = h / 1;
+        cellWidth = p.width / gridWidth;
+        cellHeight = p.height / gridHeight;
+
+        combustion = com / 1;
+        resistance = res  / 1;
+        germination = ger / 1;
+        recovery = rec / 1;
+        toroidal = tor;
         
+        deadtime = new Array(gridWidth);
+        for(let i = 0; i < deadtime.length; i++){
+            deadtime[i] = new Array(gridHeight);
+        }
+
+        p.grid = new Grid(gridWidth, gridHeight, _TREE);
+       
+        p.noStroke();
+        //p.noLoop();
+        p.fill("forestgreen");
+        p.rect(0,0,p.width,p.height);
     }
 
     p.draw = function(){
         for (let i = 0; i < gridWidth; i++){
-            evolution[i] = new Array(gridHeight);
             for (let j = 0; j < gridHeight; j++){
+                
                 p.evaluateCell(i, j);
-                evolution[i][j] = grid.data[i][j].currentState;
-
-                switch(grid.data[i][j].currentState){
-                    case _BURNING:
-                        p.fill("orangered");
-                        break;
-                    case _EMPTY:
-                        p.fill("saddlebrown");
-                        break;
-                    case _TREE:
-                        p.fill("forestgreen");
-                        break;
-                    case _BURNT:
-                        p.fill("black");
-                        break;
+                if(p.grid.cellChangedState(i, j)){
+                    switch(p.grid.next[i][j]){
+                        case _BURNING:
+                            p.fill("orangered");
+                            break;
+                        case _EMPTY:
+                            p.fill("saddlebrown");
+                            break;
+                        case _TREE:
+                            p.fill("forestgreen");
+                            break;
+                        case _BURNT:
+                            p.fill("black");
+                            break;
+                    }
+                    p.rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
                 }
-                
-                p.noStroke();
-                if(evolution[i][j] != grid.data[i][j].previousState)
-                    p.rect(i * p.width / gridWidth, j * p.height / gridHeight, (p.width / gridWidth), (p.height / gridHeight));
-                
             }
         }
-        for (let i = 0; i < gridWidth; i++){
-            for (let j = 0; j < gridHeight; j++){
-                grid.data[i][j].setState(evolution[i][j]);
-            }
-        }
-    }
-
-    p.initSketch = function(size, combustion, resistance, germination, recovery){
-        gridWidth = size;
-        gridHeight = size;
-
-        f = combustion;
-        d = resistance;
-        pt = germination;
-        rr = recovery;
-        grid = new Grid(gridWidth, gridHeight, _TREE);
-        p.noStroke();
-        p.fill("forestgreen");
-        p.rect(0,0,p.width,p.height);
-        evolution = new Array(gridWidth);
+        p.grid.iterateAll();
     }
 
     p.evaluateCell = function(xpos, ypos){
-        
-        if(grid.data[xpos][ypos].previousState == _BURNING){
-            grid.data[xpos][ypos].setState(_BURNT);
-            grid.data[xpos][ypos].deadtime = rr;
-        } 
-        else if(grid.data[xpos][ypos].previousState == _BURNT){
-            grid.data[xpos][ypos].deadtime+=grid.data[xpos][ypos].deadtime;
-            if(Math.random() < grid.data[xpos][ypos].deadtime)
-                grid.data[xpos][ypos].setState(_EMPTY);
-        }
-        else if(grid.data[xpos][ypos].previousState == _EMPTY && Math.random() < pt) grid.data[xpos][ypos].setState(_TREE);
-        else if(grid.data[xpos][ypos].previousState == _TREE && Math.random() > d){
-            if( grid.data[xpos][ypos-1 > 0? ypos-1:gridHeight-1].previousState == _BURNING ||
-                grid.data[xpos-1 > 0? xpos-1:gridWidth-1][ypos].previousState == _BURNING ||
-                grid.data[xpos+1 > gridWidth-1? 0:xpos+1][ypos].previousState == _BURNING ||
-                grid.data[xpos][ypos+1 > gridHeight-1? 0:ypos+1].previousState == _BURNING ){
-                    grid.data[xpos][ypos].setState(_BURNING);
-            }else if(Math.random() < f){
-                grid.data[xpos][ypos].setState(_BURNING);
+        if(p.grid.current[xpos][ypos] == _TREE){
+            if(Math.random() > resistance){             // "Roll" for fire resistance
+                if(toroidal){                           // check toroidal neighborhood
+                    if( p.grid.current[xpos][ypos-1 > 0? ypos-1:gridHeight-1] == _BURNING ||
+                        p.grid.current[xpos-1 > 0? xpos-1:gridWidth-1][ypos] == _BURNING ||
+                        p.grid.current[xpos+1 > gridWidth-1? 0:xpos+1][ypos] == _BURNING ||
+                        p.grid.current[xpos][ypos+1 > gridHeight-1? 0:ypos+1] == _BURNING ){
+                            p.grid.next[xpos][ypos] = _BURNING;
+                    }
+                }else{                                  // check planar neighborhood
+                    if( p.grid.current[xpos][ypos-1 > 0? ypos-1:ypos] == _BURNING ||
+                        p.grid.current[xpos-1 > 0? xpos-1:xpos][ypos] == _BURNING ||
+                        p.grid.current[xpos+1 > gridWidth-1? gridWidth-1:xpos+1][ypos] == _BURNING ||
+                        p.grid.current[xpos][ypos+1 > gridHeight-1? gridHeight-1:ypos+1] == _BURNING ){
+                            p.grid.next[xpos][ypos] = _BURNING;
+                    }
+                }
+            }else if(Math.random() < combustion){       // "Roll" for spontaneous combustion
+                p.grid.next[xpos][ypos] = _BURNING;
             }
+        }
+        else if(p.grid.current[xpos][ypos] == _BURNING){
+            p.grid.next[xpos][ypos] = _BURNT;
+            deadtime[xpos][ypos] = recovery;
+        }
+        else if(p.grid.current[xpos][ypos] == _BURNT){
+            deadtime[xpos][ypos] += deadtime[xpos][ypos];// threshold to recover grows exponentially 
+            if(Math.random() < deadtime[xpos][ypos])     // "Roll" for soil recovery
+                p.grid.next[xpos][ypos] = _EMPTY;
+        }
+        else if(p.grid.current[xpos][ypos] == _EMPTY && Math.random() < germination){// "Roll" for germination
+            p.grid.next[xpos][ypos] = _TREE;
         }
     }
 
+    p.doubleClicked = function(){
+        p.redraw();
+    }
 }

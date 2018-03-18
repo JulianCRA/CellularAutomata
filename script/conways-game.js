@@ -2,89 +2,81 @@ var conwayslife = function( p ) {
 
     let gridWidth;
     let gridHeight;
+    let cellWidth;
+    let cellHeight;
 
-    let grid;
-    let evolution;
+    p.grid;
+    let canvas;
 
     p.setup = function() {
-        p.initSketch(50, 250);
+        p.initSketch(120, 120, 4000);
 
         // GLIDER
-        //p.initSketch(50, [{x:2, y:2},{x:3, y:2},{x:4, y:2},{x:4, y:1},{x:3, y:0}]);
-
-        
-        p.createCanvas(600, 600);
+        //p.initSketch(100, 100, [{x:2, y:2},{x:3, y:2},{x:4, y:2},{x:4, y:1},{x:3, y:0}]);
     }
     
-
-    p.draw  = function(){
-        for (let i = 0; i < gridWidth; i++){
-            evolution[i] = new Array(gridHeight);
-            for (let j = 0; j < gridHeight; j++){
-                p.evaluateCell(i, j);
-                evolution[i][j] = grid.data[i][j].currentState;
-
-                p.fill(grid.data[i][j].currentState * 255);
-                p.noStroke()
-                p.rect(i * p.width / gridWidth, j * p.height / gridHeight, (p.width / gridWidth), (p.height / gridHeight));
-                
-            }
-        }
-        for (let i = 0; i < gridWidth; i++){
-            for (let j = 0; j < gridHeight; j++){
-                grid.data[i][j].setState(evolution[i][j]);
-            }
+    p.initSketch = function(w, h, seed){
+        
+        canvas = p.createCanvas(600, 600);
+        canvas.doubleClicked = function(){p.doubleClicked();};
+        p.frameRate(15);
+        p.noStroke();
+        p.background(255);
+        //p.noLoop();
+        
+        gridWidth = w / 1;
+        gridHeight = h / 1;
+        cellWidth = p.width / gridWidth;
+        cellHeight = p.height / gridHeight;
+        
+        p.grid = new Grid(gridWidth, gridHeight, 1, 1);
+        if(seed.constructor === Array){
+            for(let i = 0; i < seed.length; i++)
+                p.grid.current[seed[i].x][seed[i].y] =0;
+        }else{
+            p.grid.shuffle(seed/1, 0);
         }
     }
 
-    p.initSketch = function(size, seed){
+    p.draw  = function(){
         p.clear();
-        p.frameRate(15);
-        gridWidth = size;
-        gridHeight = size;
-        evolution = new Array(gridWidth);
-        grid = new Grid(gridWidth, gridHeight, 1);
-        if(seed.constructor === Array){
-            console.log(seed.length);
-            for(let i = 0; i < seed.length; i++)
-                grid.data[seed[i].x][seed[i].y].setInitialState(0);
-        }else{
-            grid.preShuffle(seed, 0);
+        for (let i = 0; i < gridWidth; i++){
+            for (let j = 0; j < gridHeight; j++){
+                p.evaluateCell(i, j);
+                if(!p.grid.deadCellIn(i, j)){
+                    p.fill(255 - p.grid.current[i][j] * 255);
+                    p.rect(i * cellWidth, j * cellHeight, cellWidth, cellHeight, cellWidth*0.4, cellWidth*0.4, cellWidth*0.4, cellWidth*0.4);
+                }
+            }
         }
+        p.grid.iterateAll();
     }
 
     p.evaluateCell = function(xpos, ypos){
-        let aliveNeighbors = 0;
-        for (let i = -1; i < 2; i++){
-            for (let j = -1; j < 2; j++){
-                let xx = xpos + i;
-                let yy = ypos + j;
-                if(xx == -1) xx = gridWidth - 1;
-                else if(xx == gridWidth ) xx = 0;
-                if(yy == -1) yy = gridHeight - 1;
-                else if(yy == gridHeight ) yy = 0;
-                if(grid.data[xx][yy].previousState == 0 ) aliveNeighbors++;
+        let nh = p.grid.getNeighborhood(xpos, ypos, 3, false);
+        if(nh.hasNeighbors){
+            let aliveNeighbors = nh.neighbors.length;
+            if(p.grid.current[xpos][ypos] == 0){          // if the cell is alive
+                if(aliveNeighbors < 2){                 // kill it due to "extinction"
+                    p.grid.next[xpos][ypos] = 1;       
+                }
+                else if(aliveNeighbors >= 2 && aliveNeighbors <= 3){
+                    p.grid.next[xpos][ypos] = 0;
+                }
+                else if(aliveNeighbors > 3){            // kill it due to "starvation"
+                    p.grid.next[xpos][ypos] = 1;   
+                }
+            }else{                                      // if the cell is dead
+                if(aliveNeighbors == 3){
+                    p.grid.next[xpos][ypos] = 0;       // revive it
+                }else{
+                    p.grid.next[xpos][ypos] = 1;
+                }
             }
-        }
-        
-        if(grid.data[xpos][ypos].previousState == 0){
-            aliveNeighbors--;
-            if(aliveNeighbors < 2){
-                grid.data[xpos][ypos].setState( 1 );
-            }
-            else if(aliveNeighbors >= 2 && aliveNeighbors <= 3){
-                grid.data[xpos][ypos].setState( 0 );
-            }
-            else if(aliveNeighbors > 3){
-                grid.data[xpos][ypos].setState( 1 );
-            }
-        }else{
-            if(aliveNeighbors == 3){
-                grid.data[xpos][ypos].setState( 0 );
-            }else{
-                grid.data[xpos][ypos].setState( 1 );
-            }
-        }
-    
+        }    
+    }
+
+    p.doubleClicked = function(){
+        p.redraw();
     }
 }
