@@ -53,7 +53,7 @@ var conwayslife = function( p ) {
     }
 
     p.evaluateCell = function(xpos, ypos){
-        let nh = p.grid.getNeighborhood(xpos, ypos, 3, false);
+        let nh = p.grid.getNeighborhood(xpos, ypos, 1, false); // Moore neighbprhood with Tchebychev distance of 1
         if(nh.hasNeighbors){
             let aliveNeighbors = nh.neighbors.length;
             if(p.grid.current[xpos][ypos] == 0){          // if the cell is alive

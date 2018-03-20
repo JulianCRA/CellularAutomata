@@ -21,10 +21,10 @@ var forestfire = function( p ) {
     let canvas;
     
     p.setup = function() {
-        p.initSketch(300, 300, 0.000001, 0.40, 0.005, 0.00000001, false);
+        p.initSketch(600, 300, 0.000001, 0.40, 0.005, 0.00000001, false);
     }
     p.initSketch = function(w, h, com, res, ger, rec, tor = true){
-        canvas = p.createCanvas(600, 600);
+        canvas = p.createCanvas(600, 300);
         canvas.doubleClicked = function(){p.doubleClicked();};
 
         gridWidth = w / 1;

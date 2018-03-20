@@ -3,7 +3,7 @@ class Grid{
         this.width = gwidth;
         this.height = gheight;
         this.initialState = state;
-        this.death = 1;
+        this.death = death;
         
         this.current = new Array(this.width);
         this.next = new Array(this.width);
@@ -22,15 +22,16 @@ class Grid{
             let randx = Math.floor(Math.random()*(this.width));
             let randy = Math.floor(Math.random()*(this.height));
             if(this.current[randx][randy] != state){
-                this.current[randx][randy] = state;
+                this.next[randx][randy] = state;
             }else{
                 i--;
             }
         }
+        this.iterateAll();
     }
 
-    getNeighborhood(xpos, ypos, radius = 3, toroidal = true, self = false){
-        let bound = (radius - 1)/2;
+    getNeighborhood(xpos, ypos, radius = 1, toroidal = true, self = false){
+        let bound = radius;
         let hasNeighbors = false;
         let neighbors = new Array();
         let hasEmptySpaces = false;
@@ -42,7 +43,6 @@ class Grid{
                 if(!self && i == 0 && j == 0){
                     //console.log("break? "+xpos+" - "+ypos);
                 }else{
-                //if(!self && !(i == 0 && j == 0))
                     let killAfterBounds = false;
                     let xx = xpos + i;
                     let yy = ypos + j;
@@ -56,12 +56,7 @@ class Grid{
                         if(xx < 0 || xx > this.width - 1 || yy < 0 || yy > this.height - 1){
                             killAfterBounds = true;
                         }
-                    }/*else{
-                        if(xx < 0) xx = 0;
-                        else if(xx > this.width - 1) xx = this.width - 1;
-                        if(yy < 0) yy = 0;
-                        else if(yy > this.height - 1) yy = this.height - 1;
-                    }*/
+                    }
 
                     if(!killAfterBounds){
                         if(this.existsCellIn(xx, yy)){
@@ -79,7 +74,7 @@ class Grid{
                 }
             }
         }
-        return {hasEmptySpaces:hasEmptySpaces, emptySpaces:emptySpaces, hasNeighbors:hasNeighbors, neighbors:neighbors};
+        return {hasEmptySpaces:hasEmptySpaces, emptySpaces:emptySpaces, hasNeighbors:hasNeighbors, neighbors:neighbors, deadNeighbors:deadNeighbors};
     }
     deadCellIn(xpos, ypos){
         if(this.current[xpos][ypos] == this.death){
@@ -120,5 +115,13 @@ class Grid{
     switchCells(x1, y1, x2, y2){
         this.next[x2][y2] = this.current[x1][y1];
         this.next[x1][y1] = this.current[x2][y2];
+    }
+
+    killCellAt(x, y){
+        this.next[x][y] = this.death;
+    }
+
+    removeCellAt(x, y){
+        this.next[x][y] = -1;
     }
 }

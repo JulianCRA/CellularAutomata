@@ -10,9 +10,9 @@ let p5sketch = null;
 document.getElementById("lant").onclick = function() {startAutomaton(_LANGTONS_ANT)};
 document.getElementById("life").onclick = function() {startAutomaton(_CONWAYS_GAME)};
 document.getElementById("fire").onclick = function() {startAutomaton(_FOREST_FIRE)};
-/*document.getElementById("blzh").onclick = function() {startAutomaton(_BELUSOV_ZH)};
+document.getElementById("blzh").onclick = function() {startAutomaton(_BELUSOV_ZH)};
 document.getElementById("vrep").onclick = function() {startAutomaton(_VIRAL_REP)};
-document.getElementById("dlag").onclick = function() {startAutomaton(_DIFF_LIM)};*/
+/*document.getElementById("dlag").onclick = function() {startAutomaton(_DIFF_LIM)};*/
 function startAutomaton(automaton){
     if(p5sketch!=null)p5sketch.remove();
     
@@ -33,7 +33,7 @@ function startAutomaton(automaton){
             document.getElementById("automaton-title").innerHTML = "Forest Fire";
             p5sketch = new p5(forestfire, "gridboard");
             break;
-        /*case _BELUSOV_ZH:
+        case _BELUSOV_ZH:
             //start BZ
             document.getElementById("automaton-title").innerHTML = "Belusov-Zhabotinsky's Reaction";
             p5sketch = new p5(belusovzhabotinsky, "gridboard");
@@ -43,7 +43,7 @@ function startAutomaton(automaton){
             document.getElementById("automaton-title").innerHTML = "Viral Replication";
             p5sketch = new p5(viralreplication, "gridboard");
             break;
-        case _DIFF_LIM:
+        /*case _DIFF_LIM:
             //start diffusion limited aggregation
             document.getElementById("automaton-title").innerHTML = "Diffusion-Limited Aggregation";
             p5sketch = new p5(diffusionlimitedaggregation, "gridboard");
