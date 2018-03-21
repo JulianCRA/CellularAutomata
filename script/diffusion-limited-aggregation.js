@@ -9,149 +9,117 @@ var diffusionlimitedaggregation = function (p){
 
     let q;
 
-    let k1;     // infection rate
-    let k2;     // base rate
+    let k1;
+    let k2;
     
-    let grid;
+    p.grid;
     let mobility;
+    let firstDraw = true;
+    let center;
 
     p.setup = function(){
-        p.initSketch(10, 3, 40, 10);
+        p.initSketch(200, 200, 64, 20, 1);
     }
 
-    p.initSketch = function(size, states, kk1, kk2){
+    p.initSketch = function(w, h, states, kk1, kk2){
         canvas = p.createCanvas(600,600);
         canvas.doubleClicked = function(){p.doubleClicked();}
         p.noStroke();
-        p.noLoop();
+        //p.noLoop();
+        p.frameRate(60);
 
-        gridWidth = size;
-        gridHeight = size;
+        gridWidth = w / 1;
+        gridHeight = h / 1;
         cellWidth = p.width / gridWidth;
         cellHeight = p.height / gridHeight;
 
-        k1 = kk1*1;
-        k2 = kk2*1;
-        q = states * 1;
+        k1 = kk1 / 1;
+        k2 = kk2 / 1;
+        q = states / 1;
 
         mobility = new Array(gridWidth);
-        for(let i = 0; i < gridWidth; i++)
+        markForUpdate = new Array(gridWidth);
+        for(let i = 0; i < gridWidth; i++){
             mobility[i] = new Array(gridHeight);
-
-        p.grid = new Grid(gridWidth, gridHeight, 0);
-        p.grid.data[5][5].setInitialState(q);
-        mobility[5][5] = false;
-        // Set seed cells
-        /*for(let i = 0; i < k2; i++){
-            let randX = Math.floor(Math.random()*gridWidth);
-            let randY = Math.floor(Math.random()*gridHeight);
-            if(p.grid.data[randX][randY].currentState == 0){
-                p.grid.data[randX][randY].setInitialState(q);
-                p.grid.data[randX][randY].fixed = true;
-            }else{
-                i--;
-            }
-        }*/
-        // Set "other" cells
-        let bound = Math.floor(gridWidth * gridHeight * k1 / 100);
-        for(let i = 0; i < bound; i++){
-            let randX = Math.floor(Math.random()*gridWidth);
-            let randY = Math.floor(Math.random()*gridHeight);
-            if(p.grid.data[randX][randY].currentState == 0){
-                p.grid.data[randX][randY].setInitialState(1);
-                mobility[randX][randY] = true;
-            }else{
-                i--;
-            }
+            markForUpdate[i] = new Array(gridHeight);
         }
+
+
+        p.grid = new Grid(gridWidth, gridHeight);
+        /*let seedCells = p.grid.shuffle(k2, q);
+        for(let i = 0; i < seedCells.length; i++){
+            mobility[seedCells[i].x][seedCells[i].y] = false;
+        }*/
+        center = Math.floor(gridWidth/2);
+        p.grid.next[center][center] = q;
+        mobility[center][center] = false;
+        let otherCells = p.grid.shuffle(Math.floor(gridWidth*gridHeight*kk1/100), 1, q);
+        for(let i = 0; i < otherCells.length; i++){
+            mobility[otherCells[i].x][otherCells[i].y] = true;
+        }
+        p.firstDraw();
     }
 
     p.draw = function(){
-        p.clear();
-        //p.grid.iterate();
-        for (let i = 0; i < gridWidth; i++){
-            for (let j = 0; j < gridHeight; j++){
-                let randX = Math.floor(Math.random()*gridWidth);
-                let randY = Math.floor(Math.random()*gridHeight);
+        let randX;
+        let randY;
+        
+        for(let i = 0; i < gridWidth; i++){
+            for(let j = 0; j < gridHeight; j++){
+                randX = Math.floor(Math.random()*gridWidth);
+                randY = Math.floor(Math.random()*gridHeight);
                 p.evaluateCell(randX, randY);
-                //if(p.grid.data[i][j].fixed!=undefined){
-                switch(p.grid.data[i][j].currentState){
-                    case 0:
-                        p.fill("black");
-                        break;
-                    case 1:
-                        p.fill("blue");
-                        break;
-                    case 2:
-                        p.fill("yellow");
-                        break;
-                    case 3:
-                        p.fill("white");
-                        break;
+            }
+        }
+        p.background(0);
+        for(let i = 0; i < gridWidth; i++){
+            for(let j = 0; j < gridHeight; j++){
+                if(markForUpdate[i][j]){
+                    let distance = p.dist(center, center, i, j);
+                    if(distance <= center && p.grid.current[i][j] == q){
+                        p.fill(p.color('rgba(255, 255, 154,'+ (1-(distance/(2*center))) +')'));
+                        p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
+                    }
                 }
-                //p.fill(p.grid.data[i][j].currentState*255/q);
+            }
+        }
+    }
+
+    p.firstDraw = function(){
+        for(let i = 0; i < gridWidth; i++){
+            for(let j = 0; j < gridHeight; j++){
+                p.fill(p.grid.current[i][j]*255/q);
                 p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
-                //}
-            }
-        }
-        p.grid.iterate();
-    }
-
-    p.evaluateCell = function(xpos, ypos, radius = 3){
-        if(mobility[xpos][ypos] != undefined){
-            if(mobility[xpos][ypos] == true){
-                let neighborhood = p.checkNeighborhood(xpos, ypos);
-                if(neighborhood.hasFixedNeighbors){
-                    console.log("x:"+xpos+" y:"+ypos+" hasfixed");
-                    //let newState = Math.ceil(p.random(1, q));
-                    let newState = q;
-                    p.grid.nextIteration[xpos][ypos] = newState;
-                    mobility[xpos][ypos] == false;
-                }else{
-                    
-                    let freeSpot = neighborhood.emptyNeighbors[Math.floor(Math.random() * neighborhood.emptyNeighbors.length-1)];
-                    if(freeSpot != undefined){
-                        console.log("Move");
-                        let tempMob = mobility[xpos][ypos];
-                        mobility[xpos][ypos] = mobility[freeSpot.x][freeSpot.y];
-                        mobility[freeSpot.x][freeSpot.y] = tempMob;
-
-                        let tempState = p.grid.nextIteration[xpos][ypos];
-                        p.grid.nextIteration[xpos][ypos] = p.grid.nextIteration[freeSpot.x][freeSpot.y];
-                        p.grid.nextIteration[freeSpot.x][freeSpot.y] = tempState;
-                    }
-                }
             }
         }
     }
-
-    p.checkNeighborhood = function(xpos, ypos, radius = 3){
-        let bound = (radius - 1)/2;
-        let hasFixedNeighbors = false;
-        let emptyNeighbors = new Array();
-
-        for(let i = -bound; i <= bound; i++){
-            for(let j = -bound; j <= bound; j++){
-                let xx = xpos + i;
-                let yy = ypos + j;
-
-                if(xx < 0) xx = 0;
-                else if(xx > gridWidth - 1) xx = gridWidth - 1;
-                if(yy < 0) yy = 0;
-                else if(yy > gridHeight - 1) yy = gridHeight - 1;
-
-                if(xx!=xpos && yy!=ypos){
-                    if(mobility[xx][yy] != undefined){
-                        if(mobility[xx][yy] == false){
-                            hasFixedNeighbors = true;
-                        }
-                    }else{
-                        emptyNeighbors.push({x:xx, y:yy});
-                    }
+    p.evaluateCell = function(xpos, ypos){
+        if(mobility[xpos][ypos] == true){
+            let n = p.grid.getNeighborhood(xpos, ypos, 1, false);
+            let hasFixedNeighbor = false;
+            for(let i = 0; i < n.neighborhood.length; i++){
+                if(mobility[n.neighborhood[i].x][n.neighborhood[i].y] == false){
+                    hasFixedNeighbor = true;
+                    break;
                 }
             }
+
+            if(hasFixedNeighbor){
+                p.grid.current[xpos][ypos] = q;
+                mobility[xpos][ypos] = false;
+            }
+            else{
+                if(n.hasEmptySpaces){
+                    let newPos = n.emptySpaces[Math.floor(Math.random() * n.emptySpaces.length)];
+                    p.grid.current[newPos.x][newPos.y] = p.grid.current[xpos][ypos];
+                    mobility[newPos.x][newPos.y] = true;
+                    markForUpdate[newPos.x][newPos.y] = true;
+                    p.grid.current[xpos][ypos] = -1;
+                    mobility[xpos][ypos] = undefined;
+                }
+            }
+            markForUpdate[xpos][ypos] = true;
         }
-        return {hasFixedNeighbors:hasFixedNeighbors, emptyNeighbors:emptyNeighbors};
     }
 
     p.doubleClicked = function(){

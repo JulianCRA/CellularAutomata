@@ -14,7 +14,7 @@ var belusovzhabotinsky = function( p ) {
     let canvas;
     
     p.setup = function(){
-        p.initSketch(100, 100, 12, 24, 1, 1, 10);
+        p.initSketch(200, 200, 50, 24, 1, 1, 10);
     }
     
     p.initSketch = function(w, h, seed, states, kk1, kk2, gg){
@@ -44,19 +44,19 @@ var belusovzhabotinsky = function( p ) {
         for(let i = 0; i < gridWidth; i++){
             for(let j = 0; j < gridHeight; j++){
                 p.evaluateCell(i, j);
-                if(p.grid.cellChangedState(i, j)){
-                    p.fill(p.color(p.grid.current[i][j]*255/n, 120, 120));
+                //if(p.grid.cellChangedState(i, j)){
+                    p.fill(p.color(255-p.grid.current[i][j]*255/n, p.grid.current[i][j]*255/n, 60 + p.grid.current[i][j]*255/(2*n)));
                     p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
                     //p.textSize(12);
                     //p.text(p.grid.current[i][j], i*cellWidth, j*cellHeight, cellWidth, cellHeight);
-                }
+                //}
             }
         }
         p.grid.iterateAll();
     }
 
     p.evaluateCell = function(xpos, ypos){
-        let results = p.grid.getNeighborhood(xpos, ypos, 2, false);   // Moore neighbprhood with Tchebychev distance of 2
+        let results = p.grid.getNeighborhood(xpos, ypos, 1, false);   // Moore neighbprhood with Tchebychev distance of 2
         let infected = 0;
         let ill = 0;
         let sum = 0;

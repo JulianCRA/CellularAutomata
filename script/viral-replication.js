@@ -17,7 +17,7 @@ var viralreplication = function (p){
     let firstDraw = true;
 
     p.setup = function(){
-        p.initSketch(200, 200, 50, 15, 5000, 25);
+        p.initSketch(200, 200, 32, 55, 7000, 35);
     }
 
     p.initSketch = function(w, h, states, kk1, kk2, kk3){
@@ -81,9 +81,9 @@ var viralreplication = function (p){
             }
             else if(p.grid.current[xpos][ypos] == 0){                                       // If in last stage of infection
                 p.grid.removeCellAt(xpos,ypos);
-                if(results.hasNeighbors && Math.random()<k1/100){
+                if(results.hasNeighbors){
                     for(let i = 0; i < results.neighbors.length; i++){
-                        if( p.grid.next[results.neighbors[i].x][results.neighbors[i].y] > 1)
+                        if( p.grid.next[results.neighbors[i].x][results.neighbors[i].y] > 1  && Math.random()<k1/100)
                             p.grid.next[results.neighbors[i].x][results.neighbors[i].y]--;
                     }
                 }

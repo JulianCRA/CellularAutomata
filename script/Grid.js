@@ -17,22 +17,26 @@ class Grid{
         }
     }
 
-    shuffle(amount, state){
+    shuffle(amount, state, protect = -2){
+        let cells = new Array();
         for(let i = 0; i < amount; i++){
             let randx = Math.floor(Math.random()*(this.width));
             let randy = Math.floor(Math.random()*(this.height));
-            if(this.current[randx][randy] != state){
+            if(this.next[randx][randy] != state && this.next[randx][randy] != protect){
                 this.next[randx][randy] = state;
+                cells.push({x:randx, y:randy});
             }else{
                 i--;
             }
         }
         this.iterateAll();
+        return cells;
     }
 
     getNeighborhood(xpos, ypos, radius = 1, toroidal = true, self = false){
         let bound = radius;
         let hasNeighbors = false;
+        let neighborhood = new Array();
         let neighbors = new Array();
         let hasEmptySpaces = false;
         let emptySpaces = new Array();
@@ -70,11 +74,12 @@ class Grid{
                             hasEmptySpaces = true;
                             emptySpaces.push({x:xx, y:yy, state:this.current[xx][yy]});
                         }
+                        neighborhood.push({x:xx, y:yy, state:this.current[xx][yy]});
                     }
                 }
             }
         }
-        return {hasEmptySpaces:hasEmptySpaces, emptySpaces:emptySpaces, hasNeighbors:hasNeighbors, neighbors:neighbors, deadNeighbors:deadNeighbors};
+        return {neighborhood:neighborhood, hasEmptySpaces:hasEmptySpaces, emptySpaces:emptySpaces, hasNeighbors:hasNeighbors, neighbors:neighbors, deadNeighbors:deadNeighbors};
     }
     deadCellIn(xpos, ypos){
         if(this.current[xpos][ypos] == this.death){
@@ -123,5 +128,16 @@ class Grid{
 
     removeCellAt(x, y){
         this.next[x][y] = -1;
+    }
+
+    getCells(state){
+        let cells = new Array();
+        for(let i = 0; i < this.width; i++){
+            for(let j = 0; j < this.height; j++){
+                if(this.current[i][j] == state)
+                    cells.push({x:i, y:j});
+            }
+        }
+        return cells;
     }
 }
