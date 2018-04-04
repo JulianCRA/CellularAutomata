@@ -88,10 +88,10 @@ class Grid{
         return false;
     }
     existsCellIn(xpos, ypos){
-        if(this.current[xpos][ypos] == -1){
-            return false;
+        if(this.current[xpos][ypos] != -1){
+            return true;
         }
-        return true;
+        return false;
     }
 
     cellChangedState(xpos, ypos){

@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="script/p5/p5.min.js"></script>
+    <!-- <script src="script/p5/p5.js"></script> -->
     <link rel="stylesheet" type="text/css" href="style/style.css">
   </head>
   <body>
@@ -14,9 +15,12 @@
     <script src="script/belusov-zhabotinsky.js"></script>
     <script src="script/viral-replication.js"></script>
     <script src="script/diffusion-limited-aggregation.js"></script>
+    <script src="script/bz-pix.js"></script>
 
     <div class="wrapper">
-      <header class="header">Cellular Automata</header>
+      <header class="header">Cellular Automata
+        <a href="https://github.com/JulianCRA/CellularAutomata.git">Clone</a>
+      </header>
       <aside class="sidebar">
           <input type="range" min="6" max="200" value="60" class="slider" id="gridwidth" step="6">
           <b id="sliderwidth">60</b>
@@ -48,6 +52,7 @@
               <li><button id="life">Conway's Game of Life</button></li>
               <li><button id="fire">Forest Fire</button></li>
               <li><button id="blzh">Belusov-Zhabotinsky's Reaction</button></li>
+              <li><button id="bzpix">Belusov-Zhabotinsky's Reaction(LoadPixels)</button></li>
               <li><button id="vrep">Viral Replication</button></li>
               <li><button id="dlag">Diffusion-Limited Aggregation</button></li>
           </ul>

@@ -6,6 +6,7 @@ var diffusionlimitedaggregation = function (p){
     let cellHeight;
 
     let canvas;
+    let orangered;
 
     let q;
 
@@ -14,11 +15,9 @@ var diffusionlimitedaggregation = function (p){
     
     p.grid;
     let mobility;
-    let firstDraw = true;
-    let center;
-
+    
     p.setup = function(){
-        p.initSketch(200, 200, 64, 20, 1);
+        p.initSketch(200, 200, 64, 5, 1);
     }
 
     p.initSketch = function(w, h, states, kk1, kk2){
@@ -38,31 +37,31 @@ var diffusionlimitedaggregation = function (p){
         q = states / 1;
 
         mobility = new Array(gridWidth);
-        markForUpdate = new Array(gridWidth);
         for(let i = 0; i < gridWidth; i++){
             mobility[i] = new Array(gridHeight);
-            markForUpdate[i] = new Array(gridHeight);
         }
 
-
         p.grid = new Grid(gridWidth, gridHeight);
-        /*let seedCells = p.grid.shuffle(k2, q);
+        let seedCells = p.grid.shuffle(k2, q);
         for(let i = 0; i < seedCells.length; i++){
             mobility[seedCells[i].x][seedCells[i].y] = false;
-        }*/
-        center = Math.floor(gridWidth/2);
+        }
+        /*center = Math.floor(gridWidth/2);
         p.grid.next[center][center] = q;
-        mobility[center][center] = false;
-        let otherCells = p.grid.shuffle(Math.floor(gridWidth*gridHeight*kk1/100), 1, q);
+        mobility[center][center] = false;*/
+        let otherCells = p.grid.shuffle(Math.floor(gridWidth*gridHeight*kk1/100), 5, q);
         for(let i = 0; i < otherCells.length; i++){
             mobility[otherCells[i].x][otherCells[i].y] = true;
         }
-        p.firstDraw();
+
+        orangered = p.color("orangered");
     }
 
     p.draw = function(){
         let randX;
         let randY;
+        let mobileCells = 0;
+        let keepGoing = true;
         
         for(let i = 0; i < gridWidth; i++){
             for(let j = 0; j < gridHeight; j++){
@@ -72,27 +71,27 @@ var diffusionlimitedaggregation = function (p){
             }
         }
         p.background(0);
+        //p.fill(orangered);
         for(let i = 0; i < gridWidth; i++){
             for(let j = 0; j < gridHeight; j++){
-                if(markForUpdate[i][j]){
-                    let distance = p.dist(center, center, i, j);
-                    if(distance <= center && p.grid.current[i][j] == q){
-                        p.fill(p.color('rgba(255, 255, 154,'+ (1-(distance/(2*center))) +')'));
-                        p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
+                if(p.grid.existsCellIn(i, j)){
+                    if(p.grid.current[i][j] == q){
+                        p.fill(orangered);
+                        //p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
+                    }else{
+                        mobileCells++;
+                        p.fill(50);
                     }
+                    p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
                 }
             }
         }
-    }
-
-    p.firstDraw = function(){
-        for(let i = 0; i < gridWidth; i++){
-            for(let j = 0; j < gridHeight; j++){
-                p.fill(p.grid.current[i][j]*255/q);
-                p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
-            }
+        if(mobileCells == 0){
+            console.log("STOP");
+            p.noLoop();
         }
     }
+
     p.evaluateCell = function(xpos, ypos){
         if(mobility[xpos][ypos] == true){
             let n = p.grid.getNeighborhood(xpos, ypos, 1, false);
@@ -113,12 +112,10 @@ var diffusionlimitedaggregation = function (p){
                     let newPos = n.emptySpaces[Math.floor(Math.random() * n.emptySpaces.length)];
                     p.grid.current[newPos.x][newPos.y] = p.grid.current[xpos][ypos];
                     mobility[newPos.x][newPos.y] = true;
-                    markForUpdate[newPos.x][newPos.y] = true;
                     p.grid.current[xpos][ypos] = -1;
                     mobility[xpos][ypos] = undefined;
                 }
             }
-            markForUpdate[xpos][ypos] = true;
         }
     }
 

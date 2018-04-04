@@ -14,12 +14,13 @@ var belusovzhabotinsky = function( p ) {
     let canvas;
     
     p.setup = function(){
-        p.initSketch(200, 200, 50, 24, 1, 1, 10);
+        p.initSketch(121, 121, {x:60, y:60}, 32, 4, 1, 10);
     }
     
     p.initSketch = function(w, h, seed, states, kk1, kk2, gg){
-        canvas = p.createCanvas(600, 600);
+        canvas = p.createCanvas(600, 600, p.WEBGL);
         canvas.doubleClicked = function(){p.doubleClicked();};
+        
         //p.noLoop();
         //p.frameRate(12);
 
@@ -34,13 +35,16 @@ var belusovzhabotinsky = function( p ) {
         g = gg / 1;
 
         p.grid = new Grid(gridWidth, gridHeight, 0);
-        p.grid.shuffle(seed/1, n);
+        //p.grid.shuffle(seed/1, n);
+        p.grid.current[60][60] = n;
+        p.grid.next[60][60] = n;
 
         p.noStroke();
     }
 
     p.draw = function(){
         //p.clear();
+        p.translate(-300, -300);
         for(let i = 0; i < gridWidth; i++){
             for(let j = 0; j < gridHeight; j++){
                 p.evaluateCell(i, j);
@@ -56,7 +60,7 @@ var belusovzhabotinsky = function( p ) {
     }
 
     p.evaluateCell = function(xpos, ypos){
-        let results = p.grid.getNeighborhood(xpos, ypos, 1, false);   // Moore neighbprhood with Tchebychev distance of 2
+        let results = p.grid.getNeighborhood(xpos, ypos, 1, false);   // Moore neighbprhood with Tchebychev distance of 1
         let infected = 0;
         let ill = 0;
         let sum = 0;
