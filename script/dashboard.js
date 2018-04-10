@@ -5,6 +5,7 @@ const _BELUSOV_ZH = 3;
 const _VIRAL_REP = 4;
 const _DIFF_LIM = 5;
 const _BELUSOV_ZH2 = 6;
+const _FLOOD_FILL = 7;
 
 let p5sketch = null;
 
@@ -15,6 +16,7 @@ document.getElementById("blzh").onclick = function() {startAutomaton(_BELUSOV_ZH
 document.getElementById("bzpix").onclick = function() {startAutomaton(_BELUSOV_ZH2)};
 document.getElementById("vrep").onclick = function() {startAutomaton(_VIRAL_REP)};
 document.getElementById("dlag").onclick = function() {startAutomaton(_DIFF_LIM)};
+document.getElementById("fill").onclick = function() {startAutomaton(_FLOOD_FILL)};
 function startAutomaton(automaton){
     if(p5sketch!=null){
         p5sketch.remove();
@@ -59,6 +61,11 @@ function startAutomaton(automaton){
             //start diffusion limited aggregation
             document.getElementById("automaton-title").innerHTML = "Diffusion-Limited Aggregation";
             p5sketch = new p5(diffusionlimitedaggregation, "gridboard");
+            break;
+        case _FLOOD_FILL:
+            //start diffusion limited aggregation
+            document.getElementById("automaton-title").innerHTML = "Flood Fill";
+            p5sketch = new p5(floodfill, "gridboard");
             break;
     }
 }
