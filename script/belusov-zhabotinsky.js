@@ -1,5 +1,5 @@
 var belusovzhabotinsky = function( p ) {
-    p.grid;
+    let grid;
 
     let gridWidth;
     let gridHeight;
@@ -12,55 +12,63 @@ var belusovzhabotinsky = function( p ) {
     let g;
 
     let canvas;
+    let textures;
     
     p.setup = function(){
-        p.initSketch(121, 121, {x:60, y:60}, 32, 4, 1, 10);
+        p.initSketch(120, 120, 1, 32, 4, 1, 10);
     }
     
     p.initSketch = function(w, h, seed, states, kk1, kk2, gg){
-        canvas = p.createCanvas(600, 600, p.WEBGL);
+        canvas = p.createCanvas(600, 600, p.P2D);
         canvas.doubleClicked = function(){p.doubleClicked();};
-        
         //p.noLoop();
         //p.frameRate(12);
 
         gridWidth = w / 1;
         gridHeight = h / 1;
-        cellWidth = p.width / gridWidth;
-        cellHeight = p.height / gridHeight;
-
+        cellWidth = Math.ceil(p.width / gridWidth);
+        cellHeight = Math.ceil(p.height / gridHeight);
+        
         n = states / 1;
         k1 = kk1 / 1;
         k2 = kk2 / 1;
         g = gg / 1;
 
-        p.grid = new Grid(gridWidth, gridHeight, 0);
-        //p.grid.shuffle(seed/1, n);
-        p.grid.current[60][60] = n;
-        p.grid.next[60][60] = n;
+        grid = new Grid(gridWidth, gridHeight, 0);
+        grid.shuffle(seed/1, n);
+        /*grid.current[60][60] = n;
+        grid.next[60][60] = n;*/
 
-        p.noStroke();
+        //p.noStroke();
+
+        p.textures = new Array(states+1);
+        let colorVariance = 255 / states;
+        for(let i = 1; i <= states; i++){
+            let img = p.createImage(Math.ceil(cellWidth), Math.ceil(cellHeight));
+            img.loadPixels();
+            for (let ii = 0; ii < img.width; ii++) {
+                for (let jj = 0; jj < img.height; jj++) {
+                    img.set(ii, jj, p.color([255-(i*colorVariance), i*colorVariance, 60+(i*colorVariance/2), 255]));
+                }
+            }
+            img.updatePixels();
+            p.textures[i] = img;
+        }
+        p.textures[0] = p.textures[1];
     }
 
     p.draw = function(){
-        //p.clear();
-        p.translate(-300, -300);
         for(let i = 0; i < gridWidth; i++){
             for(let j = 0; j < gridHeight; j++){
                 p.evaluateCell(i, j);
-                //if(p.grid.cellChangedState(i, j)){
-                    p.fill(p.color(255-p.grid.current[i][j]*255/n, p.grid.current[i][j]*255/n, 60 + p.grid.current[i][j]*255/(2*n)));
-                    p.rect(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
-                    //p.textSize(12);
-                    //p.text(p.grid.current[i][j], i*cellWidth, j*cellHeight, cellWidth, cellHeight);
-                //}
+                p.image(p.textures[grid.current[i][j]], i*cellWidth, j*cellHeight);
             }
         }
-        p.grid.iterateAll();
+        grid.iterateAll();
     }
 
     p.evaluateCell = function(xpos, ypos){
-        let results = p.grid.getNeighborhood(xpos, ypos, 1, false);   // Moore neighbprhood with Tchebychev distance of 1
+        let results = grid.getNeighborhood(xpos, ypos, 1, false);   // Moore neighborhood with Tchebychev distance of 2
         let infected = 0;
         let ill = 0;
         let sum = 0;
@@ -76,18 +84,18 @@ var belusovzhabotinsky = function( p ) {
             sum += results.neighbors[i].state;
         }
 
-        if(p.grid.current[xpos][ypos] == 0){                            // if the cell is "healthy"
+        if(grid.current[xpos][ypos] == 0){                            // if the cell is "healthy"
             newState = Math.floor(infected/k1) + Math.floor(ill/k2);
         }
-        else if(p.grid.current[xpos][ypos] == n){                       // if the cell is "ill"
+        else if(grid.current[xpos][ypos] == n){                       // if the cell is "ill"
             newState = 0;
         }
-        else if(p.grid.current[xpos][ypos] > 0 && p.grid.current[xpos][ypos] < n){ // if the cell is "infected"
+        else if(grid.current[xpos][ypos] > 0 && grid.current[xpos][ypos] < n){ // if the cell is "infected"
             newState = Math.floor(sum/(infected + ill + 1)) + g;
         }
         
         if(newState > n) newState = n;
-        p.grid.next[xpos][ypos] = newState;
+        grid.next[xpos][ypos] = newState;
     }
 
     p.doubleClicked = function(){

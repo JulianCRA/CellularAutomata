@@ -1,87 +1,124 @@
-html, body {
-    margin: 0;
-    padding: 0;
-  }
-
-  *, *:before, *:after {
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 10px;
-    font-family: 'Open Sans', 'sans-serif';
-    background-color: #fff;
-    color: #444;
-  }
-  
-  h1, p {
-    margin: 0 0 1em 0;
-  }
-  
-  /* no grid support? */
-  .sidebar {
-    float: left;
-    width: 19.1489%;
-  }
-  
-  .content {
-    float: right;
-    width: 79.7872%;
-  }
-  
-  /* make a grid */
-  .wrapper {
-    max-width: 940px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-gap: 5px;
-  }
-  
-  .wrapper > * {
-    background-color: rgb(49, 82, 151);
-    color: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    font-size: 150%;
-    /* needed for the floated layout*/
-    margin-bottom: 10px;
-  }
-
-  #gridboard{
-    margin: 10px 0 0 0;
-  }
-  
-  .header, .footer {
-    grid-column: 1 / -1;
-    /* needed for the floated layout */
-    clear: both;
-  }
-  
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+html,
+body {
+	margin: 0;
+	padding: 0;
 }
 
-li {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 16px;
-    text-decoration: none;
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
 }
 
-li:hover {
-    background-color: #111111;
+body {
+	margin: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #fff;
+	color: #444;
 }
-  
-  /* We need to set the widths used on floated items back to auto, and remove the bottom margin as when we have grid we have gaps. */
-  @supports (display: grid) {
-    .wrapper > * {
-      width: auto;
-      margin: 0;
-    }
-  }
+
+h1,
+p {
+	margin: 0 0 1em 0;
+}
+
+/* no grid support? */
+.sidebar {
+	float: left;
+	width: 19.1489%;
+}
+
+.content {
+	float: right;
+	width: 79.7872%;
+}
+
+/* make a grid */
+.wrapper {
+	min-width: 900px;
+	max-width: 1080;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns: 1fr 4fr;
+	grid-gap: 5px;
+}
+
+.wrapper > * {
+	background-color: rgb(49, 82, 151);
+	color: #fff;
+	border-radius: 5px;
+	padding: 20px;
+	font-size: 150%;
+	/* needed for the floated layout*/
+	margin-bottom: 10px;
+}
+
+#gridboard {
+	margin: 10px 0 0 0;
+}
+
+.header,
+.footer {
+	grid-column: 1 / -1;
+	/* needed for the floated layout */
+	clear: both;
+	justify-content: space-evenly;
+}
+
+.header {
+	padding-bottom: 10px;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+}
+
+.menu-button {
+	margin: 3px;
+	border-radius: 10px;
+	background-color: transparent;
+	display: block;
+	color: #dddddd;
+	text-align: center;
+	padding: 12px;
+	font-size: 14px;
+	font-weight: bold;
+	text-decoration: none;
+	box-sizing: border-box;
+
+	border: none;
+}
+
+.menu-button:hover {
+	box-shadow: 0px 0px 0px 3px #eeeeee inset;
+	box-sizing: border-box;
+}
+
+.menu-button:focus {
+	outline: 0;
+	background-color: #eeeeee;
+	color: #444;
+}
+
+/* We need to set the widths used on floated items back to auto, and remove the bottom margin as when we have grid we have gaps. */
+@supports (display: grid) {
+	.wrapper > * {
+		width: auto;
+		margin: 0;
+	}
+}
+a {
+	position: relative;
+	right: 0px;
+	bottom: 0px;
+}
+
+#ghlink {
+	width: 36px;
+	height: 36px;
+}
