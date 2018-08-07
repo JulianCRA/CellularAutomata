@@ -1,25 +1,10 @@
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
+@import url("slider.css");
 
 *,
 *:before,
 *:after {
-	box-sizing: border-box;
-}
-
-body {
-	margin: 10px;
-	font-family: Arial, Helvetica, sans-serif;
-	background-color: #fff;
-	color: #444;
-}
-
-h1,
-p {
-	margin: 0 0 1em 0;
+	margin: 0;
+	padding: 0;
 }
 
 /* no grid support? */
@@ -31,30 +16,28 @@ p {
 .content {
 	float: right;
 	width: 79.7872%;
+	text-align: center;
 }
 
 /* make a grid */
+
 .wrapper {
 	min-width: 900px;
-	max-width: 1080;
-	margin: 0 auto;
+	max-width: 1080px;
+	margin: 7px auto;
+	padding: 0 7px;
 	display: grid;
-	grid-template-columns: 1fr 4fr;
+	grid-template-columns: 4fr 10fr;
 	grid-gap: 5px;
 }
 
 .wrapper > * {
-	background-color: rgb(49, 82, 151);
-	color: #fff;
+	background-color: #315297;
+	color: #dddddd;
 	border-radius: 5px;
 	padding: 20px;
-	font-size: 150%;
 	/* needed for the floated layout*/
-	margin-bottom: 10px;
-}
-
-#gridboard {
-	margin: 10px 0 0 0;
+	/*margin-bottom: 10px;*/
 }
 
 .header,
@@ -65,11 +48,16 @@ p {
 	justify-content: space-evenly;
 }
 
-.header {
-	padding-bottom: 10px;
+/* We need to set the widths used on floated items back to auto, and remove the bottom margin as when we have grid we have gaps. */
+@supports (display: grid) {
+	.wrapper > * {
+		width: auto;
+		margin: 0;
+	}
 }
 
-ul {
+
+.header>ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -94,6 +82,10 @@ ul {
 	border: none;
 }
 
+.menu-button::-moz-focus-inner {
+  border: 0;
+}
+
 .menu-button:hover {
 	box-shadow: 0px 0px 0px 3px #eeeeee inset;
 	box-sizing: border-box;
@@ -105,20 +97,14 @@ ul {
 	color: #444;
 }
 
-/* We need to set the widths used on floated items back to auto, and remove the bottom margin as when we have grid we have gaps. */
-@supports (display: grid) {
-	.wrapper > * {
-		width: auto;
-		margin: 0;
-	}
-}
-a {
-	position: relative;
-	right: 0px;
-	bottom: 0px;
-}
-
 #ghlink {
 	width: 36px;
 	height: 36px;
+}
+
+
+
+#gridboard{
+	background-color: #e34356;
+	display: inline-block;
 }
